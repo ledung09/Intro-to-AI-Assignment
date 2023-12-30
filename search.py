@@ -87,17 +87,93 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    from util import Stack
+    explored_state = []                   
+    route = []    
+    currentRoute = Stack()           
+    frontier = Stack()               
+    current_state = problem.getStartState()
+
+    while not problem.isGoalState(current_state):
+        if not (current_state in explored_state):
+            explored_state += current_state
+            successors_state = problem.getSuccessors(current_state)
+
+            for child,direction,cost in successors_state:
+                new_path = route.copy()
+                new_path.append(direction)
+                currentRoute.push(new_path)
+                frontier.push(child)
+
+
+        route = currentRoute.pop()
+        current_state = frontier.pop()
+
+    return route
+
+    # util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    from util import Queue
+    explored_state = []
+    route = []
+    currentRoute = Queue()
+    frontier = Queue()                
+    current_state = problem.getStartState()
+
+    while not problem.isGoalState(current_state):
+        if not (current_state in explored_state):   
+            explored_state += current_state
+            successors_state = problem.getSuccessors(current_state)
+
+            for child,direction,cost in successors_state:
+                new_path = route.copy()
+                new_path.append(direction)
+                currentRoute.push(new_path)
+                frontier.push(child)
+
+        route = currentRoute.pop()
+        current_state = frontier.pop()
+        
+    return route
+
+    # util.raiseNotDefined()
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    from util import Queue,PriorityQueue
+    explored_state = []
+    route = []
+    currentRoute=PriorityQueue()     
+    frontier = PriorityQueue()          
+    current_state = problem.getStartState()
+
+    while not problem.isGoalState(current_state):
+        if not (current_state in explored_state):
+            explored_state += current_state
+            successors_state = problem.getSuccessors(current_state)
+
+            for child,direction,cost in successors_state:
+                if not (child in explored_state):
+                    new_path = route.copy()
+                    new_path.append(direction)
+                    g_cost = problem.getCostOfActions(new_path)
+
+                    currentRoute.push(new_path, g_cost)
+                    frontier.push(child, g_cost)
+
+        route = currentRoute.pop()    
+        current_state = frontier.pop()
+
+    return route
+
+    # util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
     """
@@ -109,7 +185,35 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    from util import Queue,PriorityQueue
+    explored_state = []                                         
+    route = []
+    currentRoute = PriorityQueue()
+    frontier = PriorityQueue()      
+    current_state = problem.getStartState()
+
+    while not problem.isGoalState(current_state):
+        if not (current_state in explored_state):
+            explored_state += current_state
+            successors_state = problem.getSuccessors(current_state)
+
+            for child,direction,cost in successors_state:
+                if not (child in explored_state):
+                    new_path = route.copy()
+                    new_path.append(direction)
+                    g_cost = problem.getCostOfActions(new_path)
+                    h_cost = heuristic(child,problem)
+                    f_cost = g_cost + h_cost
+                    frontier.push(child, f_cost)
+                    currentRoute.push(new_path, f_cost)
+
+        route = currentRoute.pop()    
+        current_state = frontier.pop()
+
+    return route
+
+    # util.raiseNotDefined()
 
 
 # Abbreviations
